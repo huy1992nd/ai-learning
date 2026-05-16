@@ -1,6 +1,6 @@
 /**
  * Ghi environment.prod.ts + app-config.json lúc build (Vercel / CI).
- * Trên Vercel: mặc định apiBaseUrl=/api (proxy qua vercel.json → ngrok, không CORS).
+ * Trên Vercel: mặc định apiBaseUrl=/api (proxy qua api/[...path].ts → ngrok, không CORS).
  * Local/override: API_BASE_URL=https://....ngrok-free.dev/api
  */
 import { writeFileSync } from 'node:fs';

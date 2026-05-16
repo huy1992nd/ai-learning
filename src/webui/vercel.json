@@ -2,11 +2,12 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "node scripts/write-env-prod.mjs && npm run build",
   "outputDirectory": "dist/webui/browser",
+  "functions": {
+    "api/[...path].ts": {
+      "maxDuration": 120
+    }
+  },
   "rewrites": [
-    {
-      "source": "/api/:path*",
-      "destination": "https://pushup-wrench-ignore.ngrok-free.dev/api/:path*"
-    },
     {
       "source": "/(.*)",
       "has": [
