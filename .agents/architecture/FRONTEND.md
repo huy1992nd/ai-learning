@@ -176,3 +176,7 @@ src/webui/
 
 - Chat dùng `fetch` thay vì chỉ `HttpClient` để đọc SSE từ `POST` một cách kiểm soát được.
 - Form đặt lịch kỳ vọng draft từ luồng chat (`GET /api/sessions/.../patient-info`); có thể mở route để dev không qua chat nhưng luồng đầy đủ đi từ chat.
+
+## Deploy (Vercel — chỉ FE)
+
+Xem [`src/webui/README.md`](../../src/webui/README.md) mục **Deploy lên Vercel (chỉ frontend)** — Root Directory `src/webui`, output `dist/webui/browser`, `vercel.json` (rewrite `/api` → BE + SPA fallback).

@@ -41,3 +41,32 @@ relative `/api`.
   updates.
 - `src/app/features/chat/message-input/message-input.component.ts` — textarea
   + send/stop buttons. Enter sends, Shift+Enter inserts a newline.
+
+## Deploy lên Vercel (chỉ frontend)
+
+Angular build ra static files; Vercel phát từ thư mục output.
+
+### 1. Cấu hình project Vercel
+
+1. **Root Directory** = `src/webui` (monorepo) — hoặc để trống nếu repo chỉ chứa thư mục webui ở gốc.
+2. **Framework Preset:** Angular (Vercel thường tự nhận qua `angular.json`).
+3. **Build Command:** `npm run build` (mặc định).
+4. **Output Directory:** `dist/webui/browser` (builder `@angular/build:application` của Angular 17+).
+5. **Install Command:** `npm ci` (khuyến nghị) hoặc `npm install`.
+
+### 2. Nối API backend
+
+Production đang dùng `apiBaseUrl: '/api'` trong [`environment.prod.ts`](./src/environments/environment.prod.ts).
+
+**Cách A — proxy qua Vercel (giữ `/api` trên cùng domain FE):** sửa [`vercel.json`](./vercel.json), thay `https://YOUR-BACKEND-HOST.example.com` bằng URL thật của BE (ví dụ `https://xxx.vercel.app`, **không** có `/` thừa cuối host). BE phải bật **CORS** cho origin FE (ví dụ `https://your-app.vercel.app`).
+
+**Cách B — gọi thẳng URL BE:** đổi `apiBaseUrl` trong `environment.prod.ts` thành `https://<be-host>/api`, commit rồi build; BE vẫn phải CORS cho origin FE.
+
+### 3. Kiểm tra
+
+Sau deploy: mở URL Vercel của FE, thử chat / health. Nếu lỗi mạng, mở DevTools → Network và kiểm tra request tới `/api` hoặc tới host BE.
+
+### 4. Ghi chú
+
+- SSE chat dùng `fetch` tới `apiBaseUrl`; CORS và (nếu dùng rewrite) URL BE phải đúng.
+- Không cần deploy BE trên Vercel nếu BE chạy chỗ khác (Docker, Railway, …); chỉ cần URL công khai + CORS.
