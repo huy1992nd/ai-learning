@@ -1,15 +1,15 @@
 /**
  * Ghi environment.prod.ts + app-config.json lúc build (Vercel / CI).
- * Set biến API_BASE_URL trên Vercel → Settings → Environment Variables.
+ * Trên Vercel: mặc định apiBaseUrl=/api (proxy qua vercel.json → ngrok, không CORS).
+ * Local/override: API_BASE_URL=https://....ngrok-free.dev/api
  */
 import { writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const raw = (
-  process.env.API_BASE_URL || 'https://pushup-wrench-ignore.ngrok-free.dev/api'
-).trim();
+const defaultBase = process.env.VERCEL ? '/api' : 'https://pushup-wrench-ignore.ngrok-free.dev/api';
+const raw = (process.env.API_BASE_URL || defaultBase).trim();
 const apiBaseUrl = raw.replace(/\/$/, '');
 
 const envTs = `/** Generated at build by scripts/write-env-prod.mjs — do not edit by hand. */
@@ -25,4 +25,4 @@ writeFileSync(
   JSON.stringify({ apiBaseUrl }, null, 2) + '\n',
   'utf8',
 );
-console.log('[write-env-prod] apiBaseUrl =', apiBaseUrl);
+console.log('[write-env-prod] apiBaseUrl =', apiBaseUrl, process.env.VERCEL ? '(VERCEL proxy)' : '');

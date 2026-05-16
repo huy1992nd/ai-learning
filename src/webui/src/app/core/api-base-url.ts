@@ -15,7 +15,7 @@ function fromWindow(): string | null {
   return w ? w.replace(/\/$/, '') : null;
 }
 
-/** Ưu tiên `window.__MEDASSIST_API_BASE__`; `/api` tương đối → ngrok. */
+/** Ưu tiên `window.__MEDASSIST_API_BASE__`; `/api` = proxy Vercel (cùng origin, không CORS). */
 export function resolveApiBaseUrl(raw: string): string {
   const win = fromWindow();
   if (win) {
@@ -23,6 +23,9 @@ export function resolveApiBaseUrl(raw: string): string {
   }
   const trimmed = raw.trim().replace(/\/$/, '');
   if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+    return trimmed;
+  }
+  if (trimmed.startsWith('/')) {
     return trimmed;
   }
   return DEFAULT_NGROK_API_BASE.replace(/\/$/, '');

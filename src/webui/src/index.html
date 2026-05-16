@@ -8,57 +8,9 @@
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
   </head>
   <body class="mat-typography">
-    <!-- Chạy trước Angular: URL BE (ngrok). Đổi khi tunnel đổi. -->
+    <!-- Mặc định /api trên Vercel (vercel.json proxy → ngrok). Dev local dùng app-config / environment. -->
     <script>
-      window.__MEDASSIST_API_BASE__ = 'https://pushup-wrench-ignore.ngrok-free.dev/api';
-      (function () {
-        var ngrokRoot = 'https://pushup-wrench-ignore.ngrok-free.dev';
-        function toNgrok(url) {
-          if (typeof url !== 'string') return url;
-          try {
-            var u = new URL(url, location.origin);
-            if (u.pathname.indexOf('/api') === 0) {
-              return ngrokRoot + u.pathname + u.search;
-            }
-          } catch (e) {}
-          return url;
-        }
-        var origFetch = window.fetch;
-        window.fetch = function (input, init) {
-          if (typeof input === 'string') {
-            input = toNgrok(input);
-          } else if (input && typeof input === 'object' && 'url' in input) {
-            var next = toNgrok(input.url);
-            if (next !== input.url) {
-              input = new Request(next, input);
-            }
-          }
-          var url = typeof input === 'string' ? input : input && input.url;
-          if (url && url.indexOf('ngrok-free.dev') !== -1) {
-            init = init ? Object.assign({}, init) : {};
-            var h = new Headers(init.headers || {});
-            h.set('ngrok-skip-browser-warning', 'true');
-            init.headers = h;
-          }
-          return origFetch.call(this, input, init);
-        };
-        var xhrOpen = XMLHttpRequest.prototype.open;
-        var xhrSend = XMLHttpRequest.prototype.send;
-        XMLHttpRequest.prototype.open = function (method, url) {
-          arguments[1] = toNgrok(url);
-          this.__ngrokApi =
-            typeof arguments[1] === 'string' && arguments[1].indexOf('ngrok-free.dev') !== -1;
-          return xhrOpen.apply(this, arguments);
-        };
-        XMLHttpRequest.prototype.send = function (body) {
-          if (this.__ngrokApi) {
-            try {
-              this.setRequestHeader('ngrok-skip-browser-warning', 'true');
-            } catch (e) {}
-          }
-          return xhrSend.apply(this, arguments);
-        };
-      })();
+      window.__MEDASSIST_API_BASE__ = '/api';
     </script>
     <app-root></app-root>
   </body>

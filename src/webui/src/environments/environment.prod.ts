@@ -1,5 +1,5 @@
-/** Production (Vercel): gọi thẳng BE qua ngrok — tránh rewrite Vercel → 502 DNS_HOSTNAME_EMPTY. */
+/** Production: /api = Vercel proxy → ngrok (build ghi bởi write-env-prod.mjs). */
 export const environment = {
   production: true,
-  apiBaseUrl: 'https://pushup-wrench-ignore.ngrok-free.dev/api',
+  apiBaseUrl: '/api',
 };

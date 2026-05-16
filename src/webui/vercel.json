@@ -4,6 +4,10 @@
   "outputDirectory": "dist/webui/browser",
   "rewrites": [
     {
+      "source": "/api/:path*",
+      "destination": "https://pushup-wrench-ignore.ngrok-free.dev/api/:path*"
+    },
+    {
       "source": "/(.*)",
       "has": [
         {
