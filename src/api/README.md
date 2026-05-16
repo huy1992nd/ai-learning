@@ -67,7 +67,7 @@ The API is then available at `http://localhost:8000`.
 
 ## Deploy lên Vercel
 
-Repo này dùng **FastAPI + PyTorch/Transformers + Chroma + SQLite**. Trên Vercel, entry ASGI là [`main.py`](./main.py) (re-export `app` từ `app.main`); cài gói bằng **`pip install -r requirements.txt`** (xem [`vercel.json`](./vercel.json)) để tránh lỗi `uv lock` khi không dùng đủ bảng `[project]` trong `pyproject.toml`. Lưu ý:
+Repo này dùng **FastAPI + PyTorch/Transformers + Chroma + SQLite**. Trên Vercel: [`pyproject.toml`](./pyproject.toml) phải có bảng **`[project]`** (Vercel chạy `uv lock` — thiếu bảng này sẽ lỗi). Entry ASGI: `[tool.vercel] entrypoint = "app.main:app"`; thêm [`main.py`](./main.py) ở gốc `src/api` để tương thích preset FastAPI. Cài gói: `pip install -r requirements.txt` qua [`vercel.json`](./vercel.json). Giữ **`[project].dependencies`** khớp **`requirements.txt`**. Lưu ý:
 
 - **Kích thước & cold start:** `torch` + `transformers` gần giới hạn bundle Python trên Vercel; lần khởi động có thể rất chậm. Nếu build/deploy lỗi vì dung lượng, nên dùng **Docker** (file [`Dockerfile`](./Dockerfile)) trên Fly.io, Railway hoặc Google Cloud Run.
 - **Filesystem:** trên serverless chỉ nên ghi **`/tmp`**. Đặt biến môi trường (trong Vercel → Settings → Environment Variables) ví dụ:
@@ -84,7 +84,7 @@ Repo này dùng **FastAPI + PyTorch/Transformers + Chroma + SQLite**. Trên Verc
 2. **Root Directory** (Vercel → Project → **Settings** → **Build and Deployment** → **Root Directory**):
    - Repo **monorepo** giống `ai-learning` (có thư mục `src/api/` trên GitHub): nhập đúng `src/api` — **không** có dấu chấm cuối (`src/api.` sẽ lỗi), **không** thêm `/` đầu.
    - Repo **chỉ chứa backend** (ví dụ đã copy nội dung `src/api` lên **gốc** repo `…-vercel-demo`): để Root Directory **trống** hoặc `.` (không dùng `src/api` vì trên GitHub không có đường dẫn đó).
-   - Cách kiểm nhanh: trên GitHub mở repo → nếu thấy `requirements.txt` và `main.py` ngay ở gốc thì Root Directory để trống; nếu các file nằm trong `src/api/` thì Root Directory = `src/api`.
+   - Cách kiểm nhanh: trên GitHub mở repo → nếu `requirements.txt` + `pyproject.toml` (có `[project]`) + `main.py` nằm trong `src/api/` thì Root Directory = `src/api`; nếu copy backend lên gốc repo thì Root Directory để trống.
 3. Biến môi trường: **Settings** → **Environment Variables** (không dùng tab Deployments để set root).
 4. Thêm secrets OpenAI/Azure (và các biến như mục Filesystem/STT ở trên). `JWT_SECRET` phải đổi khỏi giá trị demo.
 5. Deploy: push commit (Git) hoặc `vercel` từ máy sau khi `vercel login`.
