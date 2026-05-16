@@ -7,7 +7,9 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const raw = (process.env.API_BASE_URL || 'https://pushup-wrench-ignore.ngrok-free.dev/api').trim();
+const raw = (
+  process.env.API_BASE_URL || 'https://pushup-wrench-ignore.ngrok-free.dev/api'
+).trim();
 const apiBaseUrl = raw.replace(/\/$/, '');
 
 const envTs = `/** Generated at build by scripts/write-env-prod.mjs — do not edit by hand. */
