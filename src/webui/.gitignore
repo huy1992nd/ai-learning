@@ -1,0 +1,9 @@
+node_modules/
+dist/
+out-tsc/
+.angular/
+*.log
+.DS_Store
+Thumbs.db
+.env
+temp_current_design/

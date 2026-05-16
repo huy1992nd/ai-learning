@@ -1,0 +1,28 @@
+from __future__ import annotations
+
+from enum import StrEnum
+
+
+class KnowledgeCategory(StrEnum):
+    INFECTIOUS_DISEASES = "INFECTIOUS_DISEASES"
+    RESPIRATORY = "RESPIRATORY"
+    CARDIOVASCULAR = "CARDIOVASCULAR"
+    DIGESTIVE = "DIGESTIVE"
+    NEUROLOGICAL = "NEUROLOGICAL"
+    MUSCULOSKELETAL = "MUSCULOSKELETAL"
+    GENERAL_HEALTH = "GENERAL_HEALTH"
+    OTHER = "OTHER"
+
+
+class KnowledgeDocStatus(StrEnum):
+    PENDING = "PENDING"
+    PROCESSING = "PROCESSING"
+    COMPLETED = "COMPLETED"
+    FAILED = "FAILED"
+
+
+class ChunkEmbeddingStatus(StrEnum):
+    PENDING = "PENDING"
+    PROCESSING = "PROCESSING"
+    COMPLETED = "COMPLETED"
+    FAILED = "FAILED"

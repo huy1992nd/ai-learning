@@ -1,0 +1,41 @@
+# Ignore all `.env` files anywhere in the repo (secrets).
+# Keep tracked templates like `.env.example` — those names are not ignored.
+.env
+**/.env
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Microsoft Office temporary owner/lock files (names start with ~$)
+~$*
+
+# Hugging Face / local model weights (large binaries)
+/models/
+
+# AI agent plans: keep the directory, ignore generated plan files
+/.agents/plans/*
+!/.agents/plans/.gitkeep
+
+# Python bytecode / cache (apply repo-wide as a safety net)
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Editor / IDE
+.idea/
+.vscode/
+.cursor/
+*.swp
+*.swo

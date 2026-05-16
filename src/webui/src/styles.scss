@@ -1,0 +1,271 @@
+@use '@angular/material' as mat;
+@import '@fontsource/jetbrains-mono/index.css';
+@import 'material-icons/iconfont/material-icons.css';
+
+@font-face {
+  font-family: 'Noto Sans';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('assets/fonts/noto-sans/noto-sans-vietnamese-400-normal.woff2') format('woff2');
+  unicode-range: U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB;
+}
+
+@font-face {
+  font-family: 'Noto Sans';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('assets/fonts/noto-sans/noto-sans-latin-ext-400-normal.woff2') format('woff2');
+  unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Noto Sans';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('assets/fonts/noto-sans/noto-sans-latin-400-normal.woff2') format('woff2');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+@font-face {
+  font-family: 'Noto Sans';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url('assets/fonts/noto-sans/noto-sans-vietnamese-500-normal.woff2') format('woff2');
+  unicode-range: U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB;
+}
+
+@font-face {
+  font-family: 'Noto Sans';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url('assets/fonts/noto-sans/noto-sans-latin-ext-500-normal.woff2') format('woff2');
+  unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Noto Sans';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url('assets/fonts/noto-sans/noto-sans-latin-500-normal.woff2') format('woff2');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+@font-face {
+  font-family: 'Noto Sans';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src: url('assets/fonts/noto-sans/noto-sans-vietnamese-600-normal.woff2') format('woff2');
+  unicode-range: U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB;
+}
+
+@font-face {
+  font-family: 'Noto Sans';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src: url('assets/fonts/noto-sans/noto-sans-latin-ext-600-normal.woff2') format('woff2');
+  unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Noto Sans';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src: url('assets/fonts/noto-sans/noto-sans-latin-600-normal.woff2') format('woff2');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+@font-face {
+  font-family: 'Noto Sans';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url('assets/fonts/noto-sans/noto-sans-vietnamese-700-normal.woff2') format('woff2');
+  unicode-range: U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB;
+}
+
+@font-face {
+  font-family: 'Noto Sans';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url('assets/fonts/noto-sans/noto-sans-latin-ext-700-normal.woff2') format('woff2');
+  unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Noto Sans';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url('assets/fonts/noto-sans/noto-sans-latin-700-normal.woff2') format('woff2');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+@font-face {
+  font-family: 'Noto Sans JP';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('assets/fonts/noto-sans-jp/noto-sans-jp-japanese-400-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Noto Sans JP';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url('assets/fonts/noto-sans-jp/noto-sans-jp-japanese-500-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Noto Sans JP';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url('assets/fonts/noto-sans-jp/noto-sans-jp-japanese-700-normal.woff2') format('woff2');
+}
+
+:root {
+  /* Ultra-Premium Web Application Palette */
+  --c-paper: #FFFFFF;
+  --c-ink: #0F172A; /* Slate 900 - Sharp text */
+  --c-forest: #3B82F6; /* Blue 500 - Vibrant primary */
+  --c-forest-glow: rgba(59, 130, 246, 0.4);
+  --c-terracotta: #F43F5E; /* Rose 500 */
+  --c-sage: #64748B; /* Slate 500 */
+  --c-stone: #F8FAFC; /* Slate 50 - Brighter for inside cards */
+  --c-glass-bg: rgba(255, 255, 255, 0.7);
+  --c-glass-border: rgba(255, 255, 255, 0.5);
+
+  --gradient-primary: linear-gradient(135deg, #3B82F6 0%, #2DD4BF 100%);
+  --gradient-background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%);
+
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-glow: 0 10px 40px -10px var(--c-forest-glow);
+
+  --font-sans: 'Noto Sans', 'Noto Sans JP', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: var(--font-sans);
+  --font-body: var(--font-sans);
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', Consolas, monospace;
+
+  --mat-sys-surface: transparent;
+  --mat-sys-on-surface: var(--c-ink);
+  --mat-sys-surface-container: transparent;
+  --mat-sys-surface-container-low: transparent;
+  --mat-sys-outline: #E2E8F0;
+  --mat-sys-outline-variant: #CBD5E1;
+}
+
+html {
+  color-scheme: light;
+  @include mat.theme((
+    color: (
+      primary: mat.$azure-palette,
+      tertiary: mat.$blue-palette,
+    ),
+    typography: 'Noto Sans',
+    density: 0,
+  ));
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--c-paper);
+  color: var(--c-ink);
+  position: relative;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Subtle paper grain texture background */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.02;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* Motion / Animation Classes */
+@keyframes fadeInSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.anim-stagger-reveal {
+  animation: fadeInSlideUp 400ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+/* Streaming cursor */
+.streaming-cursor {
+  display: inline-block;
+  width: 1px;
+  height: 1.2em;
+  background-color: var(--c-ink);
+  vertical-align: text-bottom;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+// Knowledge Base upload dialog: opaque surface + darker backdrop
+// (CDK overlay is outside component encapsulation → global stylesheet).
+.cdk-overlay-container:has(.kb-upload-panel) {
+  z-index: 2000;
+}
+
+.cdk-overlay-backdrop.kb-upload-backdrop {
+  background-color: rgba(0, 0, 0, 0.58);
+}
+
+.kb-upload-panel .mat-mdc-dialog-container {
+  --mat-dialog-container-color: #ffffff;
+  opacity: 1;
+}
+
+.kb-upload-panel .mat-mdc-dialog-surface,
+.kb-upload-panel .mdc-dialog__surface {
+  background-color: #ffffff;
+  opacity: 1;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.22);
+}
+
+// Category mat-select panel rendered from inside the upload dialog.
+// The cdk overlay pane housing the panel must sit above the dialog pane,
+// and the panel surface must be opaque white.
+.cdk-overlay-pane:has(.kb-category-select-panel) {
+  z-index: 2100;
+}
+
+.kb-category-select-panel.mat-mdc-select-panel {
+  background-color: #ffffff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}

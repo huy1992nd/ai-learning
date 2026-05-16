@@ -1,0 +1,53 @@
+.page-card {
+  padding: 0;
+  overflow: hidden;
+  border-radius: 14px;
+  box-shadow: var(--shadow-md);
+}
+
+.page-head {
+  padding: 1.25rem 1.5rem 0;
+
+  h2 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+  }
+}
+
+.breadcrumb {
+  margin-bottom: 0.75rem;
+
+  a {
+    text-decoration: none;
+  }
+}
+
+.dept-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1rem 1.5rem 1.5rem;
+}
+
+.full {
+  width: 100%;
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 0.75rem;
+}
+
+.state {
+  display: flex;
+  justify-content: center;
+  padding: 3rem;
+}
+
+.error {
+  color: var(--c-terracotta);
+  padding: 1.5rem;
+}

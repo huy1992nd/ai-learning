@@ -1,0 +1,202 @@
+<div class="page-wrapper">
+  <header class="page-header">
+    <mat-icon class="logo-icon">smart_toy</mat-icon>
+    <h1>{{ 'appointment.title' | translate }}</h1>
+  </header>
+
+  @if (pageState() === 'loading') {
+    <div class="state-center">
+      <mat-spinner diameter="48"></mat-spinner>
+      <p>{{ 'appointment.loading' | translate }}</p>
+    </div>
+  }
+
+  @if (pageState() === 'error') {
+    <div class="state-center error-state">
+      <mat-icon class="state-icon error-icon">error_outline</mat-icon>
+      <p class="error-msg">{{ errorMessage() }}</p>
+      <button mat-flat-button color="primary" (click)="closeTab()">{{ 'common.closeTab' | translate }}</button>
+    </div>
+  }
+
+  @if (pageState() === 'success' && confirmation()) {
+    <mat-card class="confirm-card">
+      <mat-card-content>
+        <div class="confirm-header">
+          <mat-icon class="confirm-icon">check_circle</mat-icon>
+          <h2>{{ 'appointment.successTitle' | translate }}</h2>
+        </div>
+        <div class="confirm-code">{{ confirmation()!.appointment_code }}</div>
+        <div class="confirm-details">
+          <p><strong>{{ 'appointment.doctor' | translate }}:</strong> {{ confirmation()!.doctor_name }}</p>
+          <p><strong>{{ 'appointment.department' | translate }}:</strong> {{ confirmation()!.department_name }}</p>
+          <p><strong>{{ 'appointment.time' | translate }}:</strong> {{ confirmation()!.scheduled_at }}</p>
+        </div>
+        <p class="confirm-note">
+          {{ 'appointment.confirmNote' | translate }}
+        </p>
+        <button mat-flat-button color="primary" (click)="closeTab()">{{ 'common.closeTab' | translate }}</button>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  @if (pageState() === 'form' || pageState() === 'submitting') {
+    <mat-card class="form-card">
+      <mat-card-content>
+        <form [formGroup]="form" (ngSubmit)="submit()">
+          <section class="form-section readonly-section">
+            <h3 class="section-title">{{ 'appointment.infoTitle' | translate }}</h3>
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'appointment.departmentField' | translate }}</mat-label>
+                <input matInput formControlName="department_name" readonly />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'appointment.doctorField' | translate }} <span class="required"></span></mat-label>
+                <mat-select
+                  formControlName="doctor_id"
+                  (selectionChange)="onDoctorChange($event.value)"
+                >
+                  <mat-option [value]="0">{{ 'appointment.chooseDoctor' | translate }}</mat-option>
+                  @for (doc of doctors(); track doc.id) {
+                    <mat-option [value]="doc.id">{{ doc.full_name }}</mat-option>
+                  }
+                </mat-select>
+                @if (form.controls.doctor_id.invalid && form.controls.doctor_id.touched) {
+                  <mat-error>{{ 'appointment.chooseDoctorError' | translate }}</mat-error>
+                }
+              </mat-form-field>
+            </div>
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="slot-field">
+                <mat-label>{{ 'appointment.slotField' | translate }}</mat-label>
+                <mat-select
+                  formControlName="scheduled_at"
+                  [disabled]="loadingSlots() || (form.get('doctor_id')?.value ?? 0) === 0"
+                >
+                  <mat-option value="">{{ 'appointment.chooseSlot' | translate }}</mat-option>
+                  @for (s of bookableSlots(); track s.storage_value) {
+                    <mat-option [value]="s.storage_value">
+                      {{ 'appointment.slotLabel' | translate: { index: s.slot_index, label: s.label } }}
+                    </mat-option>
+                  }
+                </mat-select>
+                @if (form.controls.scheduled_at.invalid && form.controls.scheduled_at.touched) {
+                  <mat-error>{{ 'appointment.chooseSlotError' | translate }}</mat-error>
+                }
+              </mat-form-field>
+              <div class="severity-wrapper">
+                <span class="severity-label">{{ 'appointment.severity' | translate }}</span>
+                <span
+                  class="severity-badge"
+                  [class]="severityClass(form.getRawValue().severity)"
+                >
+                  {{ form.getRawValue().severity || ('common.none' | translate) }}
+                </span>
+              </div>
+            </div>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>{{ 'appointment.symptoms' | translate }}</mat-label>
+              <textarea
+                matInput
+                formControlName="symptoms_summary"
+                readonly
+                rows="2"
+              ></textarea>
+            </mat-form-field>
+          </section>
+
+          <section class="form-section">
+            <h3 class="section-title">{{ 'appointment.patientTitle' | translate }}</h3>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="grow">
+                <mat-label>{{ 'appointment.fullName' | translate }} <span class="required"></span></mat-label>
+                <input matInput formControlName="full_name" />
+                @if (form.controls.full_name.invalid && form.controls.full_name.touched) {
+                  <mat-error>{{ 'appointment.fullNameError' | translate }}</mat-error>
+                }
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'appointment.gender' | translate }}</mat-label>
+                <mat-select formControlName="gender">
+                  <mat-option value="">{{ 'appointment.gender.choose' | translate }}</mat-option>
+                  <mat-option value="MALE">{{ 'appointment.gender.male' | translate }}</mat-option>
+                  <mat-option value="FEMALE">{{ 'appointment.gender.female' | translate }}</mat-option>
+                  <mat-option value="OTHER">{{ 'appointment.gender.other' | translate }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'appointment.dob' | translate }}</mat-label>
+                <input
+                  matInput
+                  formControlName="date_of_birth"
+                  type="date"
+                />
+                @if (form.controls.date_of_birth.errors?.['invalidDate'] && form.controls.date_of_birth.touched) {
+                  <mat-error>{{ 'appointment.dobInvalid' | translate }}</mat-error>
+                }
+                @if (form.controls.date_of_birth.errors?.['futureDate'] && form.controls.date_of_birth.touched) {
+                  <mat-error>{{ 'appointment.dobFuture' | translate }}</mat-error>
+                }
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'appointment.phone' | translate }} <span class="required"></span></mat-label>
+                <input matInput formControlName="phone" [placeholder]="'appointment.phonePlaceholder' | translate" />
+                @if (form.controls.phone.invalid && form.controls.phone.touched) {
+                  <mat-error>{{ 'appointment.phoneError' | translate }}</mat-error>
+                }
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="grow">
+                <mat-label>{{ 'common.email' | translate }}</mat-label>
+                <input matInput formControlName="email" type="email" />
+                @if (form.controls.email.invalid && form.controls.email.touched) {
+                  <mat-error>{{ 'appointment.emailError' | translate }}</mat-error>
+                }
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'appointment.cccd' | translate }}</mat-label>
+                <input matInput formControlName="cccd" [placeholder]="'appointment.cccdPlaceholder' | translate" />
+                @if (form.controls.cccd.invalid && form.controls.cccd.touched) {
+                  <mat-error>{{ 'appointment.cccdError' | translate }}</mat-error>
+                }
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'appointment.bhyt' | translate }}</mat-label>
+                <input matInput formControlName="bhyt" />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="grow">
+                <mat-label>{{ 'appointment.address' | translate }}</mat-label>
+                <input matInput formControlName="address" />
+              </mat-form-field>
+            </div>
+          </section>
+
+          <div class="form-actions">
+            <button
+              mat-flat-button
+              color="primary"
+              type="submit"
+              [disabled]="pageState() === 'submitting'"
+            >
+              @if (pageState() === 'submitting') {
+                <mat-spinner diameter="20" class="btn-spinner"></mat-spinner>
+              } @else {
+                {{ 'appointment.submit' | translate }}
+              }
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  }
+</div>

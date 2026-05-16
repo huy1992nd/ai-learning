@@ -1,0 +1,89 @@
+@if (loading()) {
+  <div class="state">
+    <mat-spinner diameter="40" />
+  </div>
+} @else if (error()) {
+  <nav class="breadcrumb">
+    <button mat-button type="button" (click)="back()">
+      <mat-icon>arrow_back</mat-icon>
+      {{ 'common.back' | translate }}
+    </button>
+  </nav>
+  <mat-card class="page-card">
+    <p class="error">{{ error() }}</p>
+  </mat-card>
+} @else if (department(); as dept) {
+  <nav class="breadcrumb">
+    <button mat-button type="button" (click)="back()">
+      <mat-icon>arrow_back</mat-icon>
+      {{ 'admin.departments.title' | translate }}
+    </button>
+  </nav>
+
+  <mat-card class="page-card dept-card">
+    <div class="dept-head">
+      <h2>{{ dept.name }}</h2>
+      <div class="dept-head-actions">
+        @if (dept.specialty) {
+          <span class="chip">{{ dept.specialty }}</span>
+        }
+        <button mat-stroked-button type="button" (click)="editDepartment()">
+          {{ 'admin.department.edit' | translate }}
+        </button>
+      </div>
+    </div>
+
+    <dl class="meta">
+      <div class="meta-item">
+        <dt>{{ 'common.id' | translate }}</dt>
+        <dd>{{ dept.id }}</dd>
+      </div>
+      <div class="meta-item meta-item--wide">
+        <dt>{{ 'admin.departments.description' | translate }}</dt>
+        <dd>{{ dept.description ?? ('common.none' | translate) }}</dd>
+      </div>
+      <div class="meta-item meta-item--wide">
+        <dt>{{ 'admin.department.form.symptomsKeywords' | translate }}</dt>
+        <dd>{{ dept.symptoms_keywords ?? ('common.none' | translate) }}</dd>
+      </div>
+      <div class="meta-item meta-item--wide">
+        <dt>{{ 'admin.department.form.commonDiseases' | translate }}</dt>
+        <dd>{{ dept.common_diseases ?? ('common.none' | translate) }}</dd>
+      </div>
+    </dl>
+  </mat-card>
+
+  <mat-card class="page-card table-card">
+    <header class="section-head">
+      <h3>{{ 'admin.department.doctorsTitle' | translate }}</h3>
+      <span class="count">{{ 'admin.department.doctorCount' | translate: { count: doctors().length } }}</span>
+    </header>
+    <div class="table-wrap">
+      <table mat-table [dataSource]="doctors()" class="mat-elevation-z0">
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef>{{ 'common.id' | translate }}</th>
+          <td mat-cell *matCellDef="let row">{{ row.id }}</td>
+        </ng-container>
+        <ng-container matColumnDef="full_name">
+          <th mat-header-cell *matHeaderCellDef>{{ 'admin.doctors.fullName' | translate }}</th>
+          <td mat-cell *matCellDef="let row">{{ row.full_name }}</td>
+        </ng-container>
+        <ng-container matColumnDef="specialty">
+          <th mat-header-cell *matHeaderCellDef>{{ 'admin.doctors.specialty' | translate }}</th>
+          <td mat-cell *matCellDef="let row">{{ row.specialty ?? ('common.none' | translate) }}</td>
+        </ng-container>
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef>{{ 'common.email' | translate }}</th>
+          <td mat-cell *matCellDef="let row">{{ row.email }}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"
+          class="click-row"
+          (click)="openDoctor(row)"
+        ></tr>
+      </table>
+    </div>
+  </mat-card>
+}

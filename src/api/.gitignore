@@ -1,0 +1,10 @@
+dummy/kb_uploads/**
+!dummy/kb_uploads/.gitkeep
+
+dummy/*.db
+dummy/*.db-journal
+dummy/*.db-wal
+dummy/*.db-shm
+
+.venv
+__pycache__/

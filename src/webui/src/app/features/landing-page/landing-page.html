@@ -1,0 +1,38 @@
+<div class="landing-container">
+  <div class="hero-section">
+    <div class="hero-content">
+      <div class="badge fade-in-up">{{ 'landing.badge' | translate }}</div>
+      <h1 class="hero-title fade-in-up delay-1">
+        {{ 'landing.titlePrefix' | translate }} <br> <span class="gradient-text">{{ 'landing.titleHighlight' | translate }}</span>
+      </h1>
+      <p class="hero-subtitle fade-in-up delay-2">
+        {{ 'landing.subtitle' | translate }}
+      </p>
+      
+      <div class="hero-actions fade-in-up delay-3">
+        <button mat-fab extended color="primary" class="hero-btn-primary" (click)="onLearnMore()">
+          {{ 'landing.discover' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="features" class="features-section">
+    <!-- Placeholder for extra scrollable content if needed -->
+    <div class="feature-card">
+      <mat-icon>science</mat-icon>
+      <h3>{{ 'landing.feature.prediction.title' | translate }}</h3>
+      <p>{{ 'landing.feature.prediction.body' | translate }}</p>
+    </div>
+    <div class="feature-card">
+      <mat-icon>local_hospital</mat-icon>
+      <h3>{{ 'landing.feature.routing.title' | translate }}</h3>
+      <p>{{ 'landing.feature.routing.body' | translate }}</p>
+    </div>
+    <div class="feature-card">
+      <mat-icon>g_translate</mat-icon>
+      <h3>{{ 'landing.feature.multilingual.title' | translate }}</h3>
+      <p>{{ 'landing.feature.multilingual.body' | translate }}</p>
+    </div>
+  </div>
+</div>

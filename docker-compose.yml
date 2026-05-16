@@ -1,0 +1,34 @@
+# Full stack: Angular (nginx) + FastAPI
+# Usage:
+#   cp src/api/.env.example src/api/.env   # then fill Azure keys
+#   docker compose up --build
+# Open: http://localhost:8080  (FE proxies /api → api:8000)
+
+services:
+  api:
+    build:
+      context: ./src/api
+      dockerfile: Dockerfile
+    env_file:
+      - ./src/api/.env
+    environment:
+      # Browser hits the web container at this origin (see `web` ports)
+      CORS_ORIGINS: http://localhost:8080
+      SQLITE_DATABASE_PATH: dummy/medassist.db
+      # UC-05 registration link in chat points to the web container
+      FRONTEND_BASE_URL: http://localhost:8080
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  web:
+    build:
+      context: ./src/webui
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    depends_on:
+      - api

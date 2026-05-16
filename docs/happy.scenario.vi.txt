@@ -1,0 +1,56 @@
+# Kịch bản test happy path — Healthcare chatbot (copy từng dòng USER)
+
+Ghi chú:
+- Mỗi khối "USER:" là một tin bạn gửi lần lượt trong cùng một phiên chat (không reset session giữa chừng).
+- Cần Azure OpenAI đã cấu hình. Nếu triage hỏi thêm, trả lời ngắn theo gợi ý bot rồi tiếp tục các bước bên dưới.
+
+--------------------------------------------------------------------------------
+BƯỚC 1 — Tin đầu: triệu chứng rõ ràng (đủ liên quan y tế, bot gợi khoa)
+--------------------------------------------------------------------------------
+USER:
+Tôi bị khó thở và ho khoảng 3 ngày nay, có lúc thở gấp khi leo cầu thang.
+
+(Kỳ vọng: bot hỏi thêm ngắn HOẶC chốt khoa Phổi / hỏi có muốn đặt lịch trước — tùy model.)
+
+--------------------------------------------------------------------------------
+BƯỚC 2 — (Chỉ dùng nếu bot vẫn hỏi triệu chứng, chưa chốt khoa)
+--------------------------------------------------------------------------------
+USER:
+Không sốt, đờm ít, ho nhiều về đêm.
+
+--------------------------------------------------------------------------------
+BƯỚC 3 — Đồng ý đặt lịch (sau khi bot hỏi có muốn đặt hẹn trước không)
+--------------------------------------------------------------------------------
+USER:
+Có, tôi muốn đặt lịch trước.
+
+--------------------------------------------------------------------------------
+BƯỚC 4 — Cung cấp thông tin bệnh nhân (có thể gộp một tin hoặc tách nhiều tin tùy bot hỏi)
+--------------------------------------------------------------------------------
+USER:
+Họ tên: Nguyễn Văn An, sinh ngày 15/06/1990, nam, số điện thoại 0912345678.
+
+(Nếu bot hỏi thêm email/địa chỉ — tùy chọn:)
+USER:
+Email: an.nguyen@example.com, địa chỉ: 123 Đường ABC, Quận 1, TP.HCM.
+
+--------------------------------------------------------------------------------
+BƯỚC 5 — Sau khi thấy nút "Nhấn để vào form đăng ký"
+--------------------------------------------------------------------------------
+- Bấm nút (hoặc mở: /appointment/register?sessionId=<session_id_của_bạn>)
+- Trên form: chọn bác sĩ thuộc khoa đã gợi ý, chọn một ca còn trống, bấm xác nhận.
+
+--------------------------------------------------------------------------------
+PHIÊN BẢN RÚT GỌN (ít lượt hội thoại hơn — thử nếu bot chốt khoa ngay từ đầu)
+--------------------------------------------------------------------------------
+USER:
+Tôi bị ho và sổ mũi, không sốt, đã 2 ngày.
+
+USER:
+Vâng, tôi muốn đặt lịch trước.
+
+USER:
+Tên: Trần Thị Bình, 20/05/1995, nữ, điện thoại 0987654321.
+
+--------------------------------------------------------------------------------
+HẾT KỊCH BẢN HAPPY PATH

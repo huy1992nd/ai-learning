@@ -1,0 +1,64 @@
+<div class="composer-container" [class.disabled]="disabled()">
+  @if (detectedLanguage()) {
+    <div class="lang-chip" [matTooltip]="detectedLanguage()!.name">
+      {{ detectedLocaleCode() }} · {{ 'language.detected' | translate }}
+    </div>
+  }
+  <div class="input-wrapper">
+    <textarea
+      #textarea
+      class="composer-textarea"
+      rows="1"
+      [disabled]="disabled() || speech.isTranscribing()"
+      [ngModel]="draft()"
+      (ngModelChange)="draft.set($event)"
+      (keydown)="onKeydown($event)"
+      name="message"
+      [placeholder]="'chat.input.placeholder' | translate"
+    ></textarea>
+
+    <div class="actions">
+      <!-- Microphone button (UC-12) -->
+      <button
+        mat-icon-button
+        type="button"
+        class="mic-btn"
+        [class.recording]="speech.isRecording()"
+        [disabled]="disabled() || speech.isTranscribing()"
+        (click)="toggleRecording()"
+        [attr.aria-label]="'chat.input.record' | translate"
+        [matTooltip]="'chat.input.recordTooltip' | translate"
+      >
+        @if (speech.isTranscribing()) {
+          <mat-spinner diameter="20"></mat-spinner>
+        } @else {
+          <mat-icon>{{ speech.isRecording() ? 'stop_circle' : 'mic' }}</mat-icon>
+        }
+      </button>
+
+      <!-- Send / Stop streaming -->
+      @if (streaming()) {
+        <button
+          mat-icon-button
+          color="warn"
+          type="button"
+          (click)="stopClicked.emit()"
+          [attr.aria-label]="'chat.input.stop' | translate"
+        >
+          <mat-icon>stop</mat-icon>
+        </button>
+      } @else {
+        <button
+          mat-icon-button
+          color="primary"
+          type="submit"
+          (click)="submit()"
+          [disabled]="disabled() || draft().trim().length === 0"
+          [attr.aria-label]="'chat.input.send' | translate"
+        >
+          <mat-icon>send</mat-icon>
+        </button>
+      }
+    </div>
+  </div>
+</div>

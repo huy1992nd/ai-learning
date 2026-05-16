@@ -1,0 +1,134 @@
+<div #scrollContainer class="message-list" role="log" aria-live="polite">
+  @if (messages().length === 0) {
+  <!-- Empty state handled by parent widget -->
+  } @else {
+  @for (m of messages(); track $index) {
+
+  @if (m.role === 'user') {
+  <!-- User message: text left, avatar right -->
+  <div class="message-row user anim-stagger-reveal">
+    <div class="user-bubble">{{ m.content }}</div>
+    <div class="user-avatar" aria-hidden="true">
+      <mat-icon>person</mat-icon>
+    </div>
+  </div>
+
+  } @else {
+  <!-- Bot message: skip the empty placeholder while thinking — thinking indicator renders instead -->
+  @if (m.content || m.card || !($last && isThinking())) {
+  <div class="message-row bot anim-stagger-reveal">
+    <div class="bot-avatar" aria-hidden="true">
+      <mat-icon>smart_toy</mat-icon>
+    </div>
+    <div class="bot-content">
+      <div class="bot-text-content">
+        <div class="bot-text-row">
+          <div class="bot-text-main">
+            <span class="bot-markdown" [innerHTML]="m.content | richText"></span>
+            @if (isStreaming() && $last && m.content) {
+            <span class="streaming-cursor"></span>
+            }
+          </div>
+          @if (m.content.trim()) {
+          <button
+            type="button"
+            mat-icon-button
+            class="bot-speak-btn"
+            [disabled]="speech.ttsLoading() || (isStreaming() && $last)"
+            (click)="speakBotMessage(m.content, $last, isStreaming())"
+            [attr.aria-label]="'chat.message.speak' | translate"
+            [title]="'chat.message.speak' | translate"
+          >
+            <mat-icon>volume_up</mat-icon>
+          </button>
+          }
+        </div>
+      </div>
+
+      @if (m.card) {
+      <div class="card-container">
+        @switch (m.card.type) {
+        @case ('disease') {
+        <div class="disease-card">
+          <div class="card-header">
+            <h4>{{ 'chat.card.diseaseTitle' | translate }}</h4>
+            <span class="severity-badge" [class]="m.card.severity | lowercase">{{ m.card.severity }}</span>
+          </div>
+          <div class="prediction-list">
+            @for (p of m.card.predictions; track p.name) {
+            <div class="prediction-item">
+              <div class="prediction-header">
+                <span class="disease-name">{{ p.name }}</span>
+                <span class="confidence-val">{{ p.confidence | percent }}</span>
+              </div>
+              <div class="confidence-bar-bg">
+                <div class="confidence-bar-fill" [style.width]="(p.confidence * 100) + '%'"></div>
+              </div>
+            </div>
+            }
+          </div>
+          <div class="disclaimer-sticky">
+            <em>{{ 'chat.card.disclaimer' | translate }}</em>
+          </div>
+        </div>
+        }
+        @case ('department') {
+        <div class="department-scroll">
+          @for (dept of m.card.suggestions; track dept.id) {
+          <div class="department-card">
+            <h4>{{ dept.name }}</h4>
+            <p>{{ dept.description }}</p>
+            <div class="doctors-list">
+              @for (doc of dept.doctors; track doc.id) {
+              <div class="doctor-avatar">
+                <img [src]="doc.photoUrl || '/assets/default-doc.png'" [alt]="doc.name" />
+                <span>{{ doc.name }}</span>
+              </div>
+              }
+            </div>
+          </div>
+          }
+        </div>
+        }
+        @case ('emergency') {
+        <div class="emergency-card">
+          <h3>{{ 'chat.card.urgent' | translate }}</h3>
+          <p>{{ m.card.reason }}</p>
+          <a href="tel:{{ m.card.hotline || '115' }}" class="btn-emergency">
+            {{ 'chat.card.callEmergency' | translate: { hotline: m.card.hotline || '115' } }}
+          </a>
+        </div>
+        }
+        @case ('no_department') {
+        <div class="fallback-card">
+          <p [innerHTML]="i18n.t('chat.card.noDepartment', { diseaseName: m.card.diseaseName })"></p>
+          @if (m.card.hospitalContact) {
+          <p>{{ 'chat.card.contact' | translate: { contact: m.card.hospitalContact } }}</p>
+          }
+        </div>
+        }
+        }
+      </div>
+      }
+    </div>
+  </div>
+  } <!-- end bot-row guard -->
+  }
+
+  }
+  }
+
+  <!-- Thinking indicator: renders as a bot row with bouncing dots while waiting for first token -->
+  @if (isThinking()) {
+  <div class="message-row bot thinking-entry">
+    <div class="bot-avatar" aria-hidden="true">
+      <mat-icon>smart_toy</mat-icon>
+    </div>
+    <div class="thinking-bubble">
+      <span class="t-dot"></span>
+      <span class="t-dot"></span>
+      <span class="t-dot"></span>
+    </div>
+  </div>
+  }
+</div>

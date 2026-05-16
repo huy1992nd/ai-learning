@@ -1,0 +1,145 @@
+<!-- Floating Action Button with attention ring -->
+<div class="fab-wrapper" [class.hidden]="isOpen()">
+  <div class="fab-ring"></div>
+  <div class="fab-ring fab-ring-2"></div>
+  <button 
+    class="chatbot-fab" 
+    mat-fab 
+    color="primary" 
+    (click)="toggleOpen()" 
+    [attr.aria-label]="'chat.fab.open' | translate"
+  >
+    <mat-icon class="fab-icon">smart_toy</mat-icon>
+  </button>
+  <div class="fab-badge">
+    <span>AI</span>
+  </div>
+  <div class="fab-tooltip">{{ 'chat.fab.tooltip' | translate }}</div>
+</div>
+
+<!-- Chat Window Overlay -->
+<div class="chatbot-overlay" [class.open]="isOpen()" [class.fullscreen]="isFullscreen()">
+  <div class="chatbot-window">
+    
+    <!-- Widget Header with gradient bar -->
+    <header class="chat-header">
+      <div class="header-left">
+        <div class="bot-avatar">
+          <mat-icon>smart_toy</mat-icon>
+          <span class="online-dot"></span>
+        </div>
+        <div class="header-info">
+          <span class="header-name">MedAssist AI</span>
+          <span class="header-status">
+            @if (chat.isStreaming()) {
+              <span class="status-typing">{{ 'chat.status.thinking' | translate }}<span class="dot-1">.</span><span class="dot-2">.</span><span class="dot-3">.</span></span>
+            } @else {
+              <span class="status-online">● {{ 'chat.status.online' | translate }}</span>
+            }
+          </span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button mat-icon-button (click)="newConversation()" [matTooltip]="'chat.action.new' | translate" class="action-btn">
+          <mat-icon>add_comment</mat-icon>
+        </button>
+        <button mat-icon-button (click)="toggleFullscreen()" [matTooltip]="isFullscreen() ? ('chat.action.exitFullscreen' | translate) : ('chat.action.fullscreen' | translate)" class="action-btn">
+          <mat-icon>{{ isFullscreen() ? 'fullscreen_exit' : 'fullscreen' }}</mat-icon>
+        </button>
+        <button mat-icon-button (click)="toggleOpen()" [matTooltip]="'chat.action.close' | translate" class="action-btn close-btn">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </header>
+
+    <div class="chat-body">
+      <!-- Breadcrumb Spine (Fullscreen only) -->
+      <aside class="chat-spine">
+        <p class="spine-label">{{ 'chat.progress' | translate }}</p>
+        <div class="breadcrumb-list">
+          @for (stage of stages; track stage.id; let i = $index) {
+            <div 
+              class="breadcrumb-item" 
+              [class.active]="chat.stage() === stage.id"
+              [class.completed]="isStageCompleted(stage.id)"
+            >
+              <div class="bc-dot">
+                @if (isStageCompleted(stage.id)) {
+                  <mat-icon class="bc-check">check</mat-icon>
+                } @else {
+                  <mat-icon class="breadcrumb-icon">{{ stage.icon }}</mat-icon>
+                }
+              </div>
+              <span class="breadcrumb-label">{{ stage.labelKey | translate }}</span>
+            </div>
+          }
+        </div>
+      </aside>
+
+      <!-- Main Chat Area -->
+      <main class="chat-main">
+        <div #scrollContainer class="messages-container" role="log" aria-live="polite">
+
+          <!-- 
+            Greeting always renders at the top, regardless of conversation state.
+            Quick-prompt chips only show before the first user message.
+          -->
+          <div class="welcome-area">
+            <div class="welcome-avatar">
+              <mat-icon>smart_toy</mat-icon>
+            </div>
+            <div class="welcome-bubble">
+              <p class="welcome-greeting">{{ 'chat.welcome.greeting' | translate }}</p>
+              <p class="welcome-text" [innerHTML]="'chat.welcome.intro' | translate"></p>
+              <p class="welcome-text">{{ 'chat.welcome.question' | translate }}</p>
+            </div>
+            @if (chat.messages().length === 0 && !chat.isStreaming() && !chat.threadClosed()) {
+              <div class="quick-prompts">
+                <button class="prompt-chip" (click)="onSend(i18n.t('chat.quick.symptoms.prompt'))">
+                  <mat-icon>healing</mat-icon> {{ 'chat.quick.symptoms.label' | translate }}
+                </button>
+                <button class="prompt-chip" (click)="onResearchDisease()">
+                  <mat-icon>menu_book</mat-icon> {{ 'chat.quick.research.label' | translate }}
+                </button>
+              </div>
+            }
+          </div>
+
+          @if (chat.messages().length > 0 || chat.isStreaming()) {
+            <app-message-list
+              [messages]="chat.messages()"
+              [isStreaming]="chat.isStreaming()"
+              [isThinking]="isThinking()"
+            />
+          }
+
+          @if (chat.threadClosed()) {
+            <p class="thread-closed-hint">
+              {{ 'chat.threadClosed' | translate }}
+            </p>
+          }
+          @if (chat.showRegistrationCta()) {
+            <div class="registration-cta">
+              <button mat-flat-button color="accent" type="button" (click)="openRegistrationFormFromWidget()">
+                {{ 'chat.registrationCta' | translate }}
+              </button>
+            </div>
+          }
+
+        </div>
+
+        <!-- Composer Area -->
+        <div class="input-wrapper-outer">
+          <app-message-input 
+            [disabled]="!chat.canSend()" 
+            [streaming]="chat.isStreaming()" 
+            [detectedLanguage]="chat.language()"
+            [sessionId]="chat.sessionId()"
+            (send)="onSend($event)" 
+            (stopClicked)="chat.stop()" 
+          />
+        </div>
+      </main>
+    </div>
+  </div>
+</div>

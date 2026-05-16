@@ -1,0 +1,80 @@
+<nav class="breadcrumb">
+  <a mat-button [routerLink]="backLink()">
+    <mat-icon>arrow_back</mat-icon>
+    {{ 'common.back' | translate }}
+  </a>
+</nav>
+
+@if (loadError()) {
+  <mat-card class="page-card">
+    <p class="error">{{ loadError() }}</p>
+  </mat-card>
+} @else if (loading()) {
+  <div class="state">
+    <mat-spinner diameter="40" />
+  </div>
+} @else {
+  <mat-card class="page-card">
+    <div class="page-head">
+      <h2>
+        @if (mode() === 'create') {
+          {{ 'admin.department.form.createTitle' | translate }}
+        } @else {
+          {{ 'admin.department.form.editTitle' | translate }}
+        }
+      </h2>
+    </div>
+
+    <form class="dept-form" [formGroup]="form" (ngSubmit)="submit()">
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>{{ 'admin.departments.name' | translate }}</mat-label>
+        <input matInput formControlName="name" autocomplete="off" />
+        @if (form.controls.name.hasError('required')) {
+          <mat-error>{{ 'admin.login.required' | translate }}</mat-error>
+        } @else if (form.controls.name.hasError('minlength')) {
+          <mat-error>{{ 'admin.department.form.nameMin' | translate }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>{{ 'admin.departments.description' | translate }}</mat-label>
+        <textarea matInput formControlName="description" rows="3"></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>{{ 'admin.departments.specialty' | translate }}</mat-label>
+        <input matInput formControlName="specialty" autocomplete="off" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>{{ 'admin.department.form.symptomsKeywords' | translate }}</mat-label>
+        <textarea matInput formControlName="symptoms_keywords" rows="2"></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>{{ 'admin.department.form.commonDiseases' | translate }}</mat-label>
+        <textarea matInput formControlName="common_diseases" rows="2"></textarea>
+      </mat-form-field>
+
+      <div class="actions">
+        <a mat-stroked-button type="button" [routerLink]="backLink()">
+          {{ 'admin.department.form.cancel' | translate }}
+        </a>
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          [disabled]="saving()"
+        >
+          @if (saving()) {
+            {{ 'admin.department.form.saving' | translate }}
+          } @else if (mode() === 'create') {
+            {{ 'admin.department.form.submitCreate' | translate }}
+          } @else {
+            {{ 'admin.department.form.submitUpdate' | translate }}
+          }
+        </button>
+      </div>
+    </form>
+  </mat-card>
+}

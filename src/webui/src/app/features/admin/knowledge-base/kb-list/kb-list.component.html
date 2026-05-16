@@ -1,0 +1,78 @@
+<mat-card class="page-card">
+  <div class="page-head">
+    <div class="page-head-text">
+      <h2>{{ 'admin.kb.title' | translate }}</h2>
+      <p>{{ 'admin.kb.subtitle' | translate }}</p>
+    </div>
+    <div class="page-head-actions">
+      <button
+        mat-stroked-button
+        type="button"
+        (click)="retry()"
+        [disabled]="loading()"
+      >
+        {{ 'admin.kb.retry' | translate }}
+      </button>
+      <button
+        mat-flat-button
+        color="primary"
+        type="button"
+        (click)="openUpload()"
+        [disabled]="loading()"
+      >
+        <mat-icon>upload</mat-icon>
+        {{ 'admin.kb.uploadCta' | translate }}
+      </button>
+    </div>
+  </div>
+
+  @if (error(); as errKey) {
+    <p class="error-banner">{{ errKey | translate }}</p>
+  }
+
+  @if (loading() && rows().length === 0 && total() === 0) {
+    <div class="state">
+      <mat-spinner diameter="40" />
+    </div>
+  } @else if (!loading() && total() === 0 && !error()) {
+    <p class="empty-hint">{{ 'admin.kb.empty' | translate }}</p>
+  } @else if (total() > 0) {
+    <div class="table-wrap">
+      <table mat-table [dataSource]="rows()" class="mat-elevation-z0">
+        <ng-container matColumnDef="filename">
+          <th mat-header-cell *matHeaderCellDef>{{ 'admin.kb.col.filename' | translate }}</th>
+          <td mat-cell *matCellDef="let row">{{ row.title || row.original_filename }}</td>
+        </ng-container>
+        <ng-container matColumnDef="category">
+          <th mat-header-cell *matHeaderCellDef>{{ 'admin.kb.col.category' | translate }}</th>
+          <td mat-cell *matCellDef="let row">{{ 'admin.kb.category.' + row.category | translate }}</td>
+        </ng-container>
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>{{ 'admin.kb.col.status' | translate }}</th>
+          <td mat-cell *matCellDef="let row">{{ 'admin.kb.status.' + row.status | translate }}</td>
+        </ng-container>
+        <ng-container matColumnDef="chunks">
+          <th mat-header-cell *matHeaderCellDef>{{ 'admin.kb.col.chunks' | translate }}</th>
+          <td mat-cell *matCellDef="let row">{{ row.total_chunks }}</td>
+        </ng-container>
+        <ng-container matColumnDef="uploadedAt">
+          <th mat-header-cell *matHeaderCellDef>{{ 'admin.kb.col.uploadedAt' | translate }}</th>
+          <td mat-cell *matCellDef="let row">{{ row.created_at | date: 'short' }}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    <mat-paginator
+      class="paginator-bar"
+      [length]="total()"
+      [pageIndex]="pageIndex()"
+      [pageSize]="pageSize()"
+      [pageSizeOptions]="pageSizeOptions"
+      [showFirstLastButtons]="true"
+      [disabled]="loading()"
+      (page)="onPage($event)"
+    />
+  }
+</mat-card>

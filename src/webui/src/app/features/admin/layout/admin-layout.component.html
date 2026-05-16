@@ -1,0 +1,40 @@
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand">{{ 'common.adminAppName' | translate }}</div>
+    <nav>
+      <a
+        routerLink="/admin/department"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: false }"
+      >
+        <mat-icon>domain</mat-icon>
+        {{ 'admin.nav.departments' | translate }}
+      </a>
+      <a routerLink="/admin/doctors" routerLinkActive="active">
+        <mat-icon>medical_services</mat-icon>
+        {{ 'admin.nav.doctors' | translate }}
+      </a>
+      <a routerLink="/admin/knowledge-base" routerLinkActive="active">
+        <mat-icon>library_books</mat-icon>
+        {{ 'admin.nav.knowledgeBase' | translate }}
+      </a>
+    </nav>
+  </aside>
+  <div class="main">
+    <header class="topbar">
+      <span class="user">{{ auth.getDisplayName() }}</span>
+      <button
+        mat-stroked-button
+        type="button"
+        (click)="logout()"
+        [matTooltip]="'admin.logout' | translate"
+      >
+        <mat-icon>logout</mat-icon>
+        {{ 'admin.logout' | translate }}
+      </button>
+    </header>
+    <div class="content">
+      <router-outlet />
+    </div>
+  </div>
+</div>

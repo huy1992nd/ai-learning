@@ -1,0 +1,97 @@
+@if (loading()) {
+  <div class="state">
+    <mat-spinner diameter="40" />
+  </div>
+} @else if (error() && !doctor()) {
+  <nav class="breadcrumb">
+    <button mat-button type="button" (click)="backToDepartment()">
+      <mat-icon>arrow_back</mat-icon>
+      {{ 'common.back' | translate }}
+    </button>
+  </nav>
+  <mat-card class="page-card">
+    <p class="error">{{ error() }}</p>
+  </mat-card>
+} @else if (doctor(); as doc) {
+  <nav class="breadcrumb">
+    <button mat-button type="button" (click)="backToDepartment()">
+      <mat-icon>arrow_back</mat-icon>
+      {{ 'admin.doctor.backDepartment' | translate }}
+    </button>
+  </nav>
+
+  <mat-card class="page-card profile-card">
+    <div class="profile">
+      @if (doc.photo_url) {
+        <img [src]="doc.photo_url" alt="" class="photo" />
+      } @else {
+        <div class="photo placeholder">
+          <mat-icon>person</mat-icon>
+        </div>
+      }
+      <div class="profile-text">
+        <div class="profile-head">
+          <h2>{{ doc.full_name }}</h2>
+          @if (doc.title) {
+            <p class="title">{{ doc.title }}</p>
+          }
+        </div>
+
+        <dl class="meta">
+          <div class="meta-item">
+            <dt>{{ 'common.email' | translate }}</dt>
+            <dd>{{ doc.email }}</dd>
+          </div>
+          <div class="meta-item">
+            <dt>{{ 'admin.doctor.phone' | translate }}</dt>
+            <dd>{{ doc.phone ?? ('common.none' | translate) }}</dd>
+          </div>
+          <div class="meta-item">
+            <dt>{{ 'admin.doctors.specialty' | translate }}</dt>
+            <dd>{{ doc.specialty ?? ('common.none' | translate) }}</dd>
+          </div>
+        </dl>
+
+        @if (doc.bio) {
+          <p class="bio">{{ doc.bio }}</p>
+        }
+      </div>
+    </div>
+  </mat-card>
+
+  <mat-card class="page-card">
+    <header class="section-head">
+      <h3>{{ 'admin.doctor.appointmentsTitle' | translate }}</h3>
+      <span class="count">{{ 'admin.doctor.appointmentCount' | translate: { count: appointments().length } }}</span>
+    </header>
+    @if (apptError()) {
+      <p class="warn">{{ apptError() }}</p>
+    }
+    <div class="table-wrap">
+      <table
+        mat-table
+        [dataSource]="appointments()"
+        class="mat-elevation-z0"
+      >
+        <ng-container matColumnDef="appointment_code">
+          <th mat-header-cell *matHeaderCellDef>{{ 'admin.doctor.code' | translate }}</th>
+          <td mat-cell *matCellDef="let row">{{ row.appointment_code }}</td>
+        </ng-container>
+        <ng-container matColumnDef="scheduled_at">
+          <th mat-header-cell *matHeaderCellDef>{{ 'admin.doctor.time' | translate }}</th>
+          <td mat-cell *matCellDef="let row">{{ row.scheduled_at }}</td>
+        </ng-container>
+        <ng-container matColumnDef="patient_name">
+          <th mat-header-cell *matHeaderCellDef>{{ 'admin.doctor.patient' | translate }}</th>
+          <td mat-cell *matCellDef="let row">{{ row.patient_name ?? ('common.none' | translate) }}</td>
+        </ng-container>
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>{{ 'admin.doctor.status' | translate }}</th>
+          <td mat-cell *matCellDef="let row">{{ row.status ?? ('common.none' | translate) }}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="apptColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: apptColumns"></tr>
+      </table>
+    </div>
+  </mat-card>
+}

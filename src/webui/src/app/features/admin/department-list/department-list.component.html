@@ -1,0 +1,47 @@
+<mat-card class="page-card">
+  <div class="page-head">
+    <div class="page-head-text">
+      <h2>{{ 'admin.departments.title' | translate }}</h2>
+      <p>{{ 'admin.departments.subtitle' | translate }}</p>
+    </div>
+    <button mat-flat-button color="primary" type="button" (click)="openCreate()">
+      {{ 'admin.departments.createButton' | translate }}
+    </button>
+  </div>
+
+  @if (loading()) {
+    <div class="state">
+      <mat-spinner diameter="40" />
+    </div>
+  } @else if (error()) {
+    <p class="error">{{ error() }}</p>
+  } @else {
+    <div class="table-wrap">
+      <table mat-table [dataSource]="rows()" class="mat-elevation-z0">
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef>{{ 'common.id' | translate }}</th>
+          <td mat-cell *matCellDef="let row">{{ row.id }}</td>
+        </ng-container>
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>{{ 'admin.departments.name' | translate }}</th>
+          <td mat-cell *matCellDef="let row">{{ row.name }}</td>
+        </ng-container>
+        <ng-container matColumnDef="description">
+          <th mat-header-cell *matHeaderCellDef>{{ 'admin.departments.description' | translate }}</th>
+          <td mat-cell *matCellDef="let row">{{ row.description ?? ('common.none' | translate) }}</td>
+        </ng-container>
+        <ng-container matColumnDef="specialty">
+          <th mat-header-cell *matHeaderCellDef>{{ 'admin.departments.specialty' | translate }}</th>
+          <td mat-cell *matCellDef="let row">{{ row.specialty ?? ('common.none' | translate) }}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"
+          class="click-row"
+          (click)="openRow(row)"
+        ></tr>
+      </table>
+    </div>
+  }
+</mat-card>

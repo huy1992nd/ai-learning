@@ -1,0 +1,31 @@
+<nav class="navbar-glass">
+  <div class="nav-brand">
+    <mat-icon class="brand-icon">healing</mat-icon>
+    <span class="brand-name">MedAssist</span>
+  </div>
+
+  <div class="nav-links">
+    <button mat-button class="nav-item" (click)="scrollToSection('symptoms')">{{ 'navbar.symptoms' | translate }}</button>
+    <button mat-button class="nav-item" (click)="scrollToSection('diagnosis')">{{ 'navbar.diagnosis' | translate }}</button>
+    <button mat-button class="nav-item" (click)="scrollToSection('department')">{{ 'navbar.department' | translate }}</button>
+  </div>
+
+  <div class="nav-actions">
+    <button mat-icon-button [matMenuTriggerFor]="langMenu" [attr.aria-label]="'navbar.language' | translate">
+      <mat-icon>language</mat-icon>
+    </button>
+    <mat-menu #langMenu="matMenu">
+      @for (locale of locales; track locale) {
+        <button mat-menu-item type="button" (click)="setLocale(locale)">
+          <mat-icon>{{ i18n.locale() === locale ? 'check' : '' }}</mat-icon>
+          <span>{{ 'language.' + locale | translate }}</span>
+        </button>
+      }
+    </mat-menu>
+
+    <!-- Theme Toggle -->
+    <button mat-icon-button (click)="toggleTheme()" [attr.aria-label]="'navbar.theme' | translate">
+      <mat-icon>{{ isDarkTheme() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+    </button>
+  </div>
+</nav>

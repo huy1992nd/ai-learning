@@ -1,0 +1,78 @@
+:host {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: block;
+}
+
+.navbar-glass {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 32px;
+  background: var(--c-glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--c-glass-border);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--c-forest);
+  cursor: pointer;
+}
+
+.brand-icon {
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
+}
+
+.brand-name {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--c-ink);
+  letter-spacing: -0.02em;
+}
+
+.nav-links {
+  display: none;
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .nav-links {
+    display: flex;
+  }
+}
+
+.nav-item {
+  font-family: var(--font-body);
+  font-weight: 500;
+  color: var(--c-sage);
+  transition: color 0.3s;
+}
+
+.nav-item:hover {
+  color: var(--c-forest);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+button[mat-icon-button] {
+  color: var(--c-sage);
+  transition: color 0.3s;
+}
+
+button[mat-icon-button]:hover {
+  color: var(--c-forest);
+}
