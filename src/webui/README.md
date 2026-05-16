@@ -51,7 +51,7 @@ Angular build ra static files; Vercel phát từ thư mục output.
 1. **Root Directory** = `src/webui` (monorepo) — hoặc để trống nếu repo chỉ chứa thư mục webui ở gốc.
 2. **Framework Preset:** Angular (Vercel thường tự nhận qua `angular.json`).
 3. **Build Command:** `npm run build` (mặc định).
-4. **Output Directory:** `dist/webui/browser` (builder `@angular/build:application` của Angular 17+).
+4. **Output Directory:** **`dist/webui/browser`** — bắt buộc có `/browser` (file `index.html` nằm ở đó; log build chỉ ghi `dist/webui` là thư mục cha). Nếu để `dist/webui` → deploy xong mở web **404 NOT_FOUND**. Có thể để trống trong dashboard nếu dùng [`vercel.json`](./vercel.json) (`outputDirectory` đã khai báo).
 5. **Install Command:** `npm ci` (khuyến nghị) hoặc `npm install`.
 
 ### 2. Nối API backend
