@@ -1,7 +1,7 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 
 import { withNgrokHeaders } from '../api-http-headers';
-import { environment } from '../../../environments/environment';
+import { ApiBaseUrlService } from './api-base-url.service';
 
 const STORAGE_KEY = 'chat_session_id';
 
@@ -18,6 +18,7 @@ function generateUuid(): string {
 
 @Injectable({ providedIn: 'root' })
 export class SessionService {
+  private readonly apiBase = inject(ApiBaseUrlService);
   private readonly _sessionId = signal<string>(this.loadOrCreate());
 
   readonly sessionId = this._sessionId.asReadonly();
@@ -25,7 +26,7 @@ export class SessionService {
   async reset(): Promise<void> {
     const current = this._sessionId();
     try {
-      await fetch(`${environment.apiBaseUrl}/sessions/${current}`, {
+      await fetch(`${this.apiBase.base}/sessions/${current}`, {
         method: 'DELETE',
         headers: withNgrokHeaders(),
       });

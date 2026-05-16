@@ -1,14 +1,15 @@
-import { provideAppInitializer } from '@angular/core';
+import { inject, provideAppInitializer } from '@angular/core';
 
-import { environment } from '../../environments/environment';
+import { ApiBaseUrlService } from './services/api-base-url.service';
 
 export interface AppConfigFile {
   apiBaseUrl?: string;
 }
 
-/** Đọc `/assets/app-config.json` khi khởi động — ghi đè `environment.apiBaseUrl` (fix deploy Vercel còn bundle `/api`). */
+/** Đọc `/assets/app-config.json` trước khi app chạy — cập nhật `ApiBaseUrlService`. */
 export function provideAppConfigInitializer() {
   return provideAppInitializer(() => {
+    const apiBase = inject(ApiBaseUrlService);
     return fetch('/assets/app-config.json', { cache: 'no-store' })
       .then((res) => {
         if (!res.ok) {
@@ -17,13 +18,13 @@ export function provideAppConfigInitializer() {
         return res.json() as Promise<AppConfigFile>;
       })
       .then((cfg) => {
-        const url = (cfg.apiBaseUrl ?? '').trim().replace(/\/$/, '');
-        if (url) {
-          environment.apiBaseUrl = url;
+        if (cfg.apiBaseUrl?.trim()) {
+          apiBase.setBaseUrl(cfg.apiBaseUrl);
         }
+        console.info('[app-config] apiBaseUrl =', apiBase.base);
       })
       .catch((err) => {
-        console.warn('[app-config] fallback to build-time apiBaseUrl:', environment.apiBaseUrl, err);
+        console.warn('[app-config] using default apiBaseUrl:', apiBase.base, err);
       });
   });
 }

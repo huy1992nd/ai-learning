@@ -2,7 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { Subject } from 'rxjs';
 
 import { withNgrokHeaders } from '../api-http-headers';
-import { environment } from '../../../environments/environment';
+import { ApiBaseUrlService } from './api-base-url.service';
 import { I18nService } from '../i18n/i18n.service';
 
 const MAX_BYTES = 25 * 1024 * 1024; // 25 MB — Whisper API limit
@@ -20,6 +20,7 @@ function preferredMimeType(): string {
 @Injectable({ providedIn: 'root' })
 export class SpeechService {
   private readonly i18n = inject(I18nService);
+  private readonly apiBase = inject(ApiBaseUrlService);
 
   readonly isRecording = signal(false);
   readonly isTranscribing = signal(false);
@@ -123,7 +124,7 @@ export class SpeechService {
     formData.append('file', blob, `audio.${ext}`);
 
     try {
-      const res = await fetch(`${environment.apiBaseUrl}/audio/speech-to-text`, {
+      const res = await fetch(`${this.apiBase.base}/audio/speech-to-text`, {
         method: 'POST',
         headers: withNgrokHeaders(),
         body: formData,
@@ -185,7 +186,7 @@ export class SpeechService {
     this.ttsLoading.set(true);
 
     try {
-      const res = await fetch(`${environment.apiBaseUrl}/audio/text-to-speech`, {
+      const res = await fetch(`${this.apiBase.base}/audio/text-to-speech`, {
         method: 'POST',
         headers: withNgrokHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify({

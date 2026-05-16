@@ -2,7 +2,7 @@ import { Injectable, computed, inject, signal, ApplicationRef } from '@angular/c
 import { Router } from '@angular/router';
 
 import { withNgrokHeaders } from '../api-http-headers';
-import { environment } from '../../../environments/environment';
+import { ApiBaseUrlService } from './api-base-url.service';
 import { ChatMessage, ConversationStage, DetectedLanguage, MessageCard, Severity } from '../../features/chat/models/message.model';
 import { SessionService } from './session.service';
 import { I18nService } from '../i18n/i18n.service';
@@ -26,6 +26,7 @@ export class ChatSessionStore {
   private readonly appRef = inject(ApplicationRef);
   private readonly router = inject(Router);
   private readonly i18n = inject(I18nService);
+  private readonly apiBase = inject(ApiBaseUrlService);
 
   private readonly _messages = signal<ChatMessage[]>([]);
   private readonly _isStreaming = signal(false);
@@ -78,7 +79,7 @@ export class ChatSessionStore {
       : '/chat/stream';
 
     try {
-      const response = await fetch(`${environment.apiBaseUrl}${streamPath}`, {
+      const response = await fetch(`${this.apiBase.base}${streamPath}`, {
         method: 'POST',
         headers: withNgrokHeaders({
           'Content-Type': 'application/json',

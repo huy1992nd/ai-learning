@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { environment } from '../../../environments/environment';
+import { ApiBaseUrlService } from './api-base-url.service';
 import {
   AdminAppointmentRow,
   DepartmentMutationResponse,
@@ -17,37 +17,37 @@ import {
 @Injectable({ providedIn: 'root' })
 export class AdminApiService {
   private readonly http = inject(HttpClient);
-  private readonly base = environment.apiBaseUrl;
+  private readonly apiBase = inject(ApiBaseUrlService);
 
   getDepartments(): Observable<DepartmentPublic[]> {
-    return this.http.get<DepartmentPublic[]>(`${this.base}/departments`);
+    return this.http.get<DepartmentPublic[]>(`${this.apiBase.base}/departments`);
   }
 
   getDepartment(id: number): Observable<DepartmentPublic> {
     return this.http.get<DepartmentPublic>(
-      `${this.base}/departments/${id}`,
+      `${this.apiBase.base}/departments/${id}`,
     );
   }
 
   getDepartmentDoctors(departmentId: number): Observable<DoctorPublic[]> {
     return this.http.get<DoctorPublic[]>(
-      `${this.base}/departments/${departmentId}/doctors`,
+      `${this.apiBase.base}/departments/${departmentId}/doctors`,
     );
   }
 
   getAllDoctors(): Observable<DoctorPublic[]> {
-    return this.http.get<DoctorPublic[]>(`${this.base}/doctors`);
+    return this.http.get<DoctorPublic[]>(`${this.apiBase.base}/doctors`);
   }
 
   getDoctor(doctorId: number): Observable<DoctorPublic> {
-    return this.http.get<DoctorPublic>(`${this.base}/doctors/${doctorId}`);
+    return this.http.get<DoctorPublic>(`${this.apiBase.base}/doctors/${doctorId}`);
   }
 
   getDoctorAppointments(
     doctorId: number,
   ): Observable<AdminAppointmentRow[]> {
     return this.http.get<AdminAppointmentRow[]>(
-      `${this.base}/admin/doctors/${doctorId}/appointments`,
+      `${this.apiBase.base}/admin/doctors/${doctorId}/appointments`,
     );
   }
 
@@ -55,7 +55,7 @@ export class AdminApiService {
     body: DepartmentWritePayload,
   ): Observable<DepartmentMutationResponse> {
     return this.http.post<DepartmentMutationResponse>(
-      `${this.base}/admin/departments`,
+      `${this.apiBase.base}/admin/departments`,
       body,
     );
   }
@@ -65,7 +65,7 @@ export class AdminApiService {
     body: Partial<DepartmentWritePayload>,
   ): Observable<DepartmentMutationResponse> {
     return this.http.patch<DepartmentMutationResponse>(
-      `${this.base}/admin/departments/${id}`,
+      `${this.apiBase.base}/admin/departments/${id}`,
       body,
     );
   }

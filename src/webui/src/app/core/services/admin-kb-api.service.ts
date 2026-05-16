@@ -7,7 +7,7 @@ import {
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { environment } from '../../../environments/environment';
+import { ApiBaseUrlService } from './api-base-url.service';
 import type {
   KbCategory,
   KbListResponse,
@@ -25,7 +25,7 @@ export interface KbListParams {
 @Injectable({ providedIn: 'root' })
 export class AdminKbApiService {
   private readonly http = inject(HttpClient);
-  private readonly base = environment.apiBaseUrl;
+  private readonly apiBase = inject(ApiBaseUrlService);
 
   list(params: KbListParams): Observable<KbListResponse> {
     let httpParams = new HttpParams()
@@ -41,7 +41,7 @@ export class AdminKbApiService {
       httpParams = httpParams.set('status', params.status.trim());
     }
     return this.http.get<KbListResponse>(
-      `${this.base}/admin/knowledge-base/documents`,
+      `${this.apiBase.base}/admin/knowledge-base/documents`,
       { params: httpParams },
     );
   }
@@ -59,7 +59,7 @@ export class AdminKbApiService {
 
     const req = new HttpRequest(
       'POST',
-      `${this.base}/admin/knowledge-base/documents`,
+      `${this.apiBase.base}/admin/knowledge-base/documents`,
       form,
       { reportProgress: true },
     );

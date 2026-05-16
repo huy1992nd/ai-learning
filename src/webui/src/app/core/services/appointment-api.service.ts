@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { environment } from '../../../environments/environment';
+import { ApiBaseUrlService } from './api-base-url.service';
 import {
   AppointmentCreateRequest,
   AppointmentPublic,
@@ -25,17 +25,17 @@ export interface BookableSlotItem {
 @Injectable({ providedIn: 'root' })
 export class AppointmentApiService {
   private readonly http = inject(HttpClient);
-  private readonly base = environment.apiBaseUrl;
+  private readonly apiBase = inject(ApiBaseUrlService);
 
   getPatientInfo(sessionId: string): Observable<PatientInfoResponse> {
     return this.http.get<PatientInfoResponse>(
-      `${this.base}/sessions/${sessionId}/patient-info`,
+      `${this.apiBase.base}/sessions/${sessionId}/patient-info`,
     );
   }
 
   getDoctorsForDepartment(departmentId: number): Observable<DoctorCatalog[]> {
     return this.http.get<DoctorCatalog[]>(
-      `${this.base}/departments/${departmentId}/doctors`,
+      `${this.apiBase.base}/departments/${departmentId}/doctors`,
     );
   }
 
@@ -46,7 +46,7 @@ export class AppointmentApiService {
     return this.http.get<{
       doctor_id: number;
       slots: BookableSlotItem[];
-    }>(`${this.base}/bookable-slots`, {
+    }>(`${this.apiBase.base}/bookable-slots`, {
       params: { doctor_id: String(doctorId) },
     });
   }
@@ -55,7 +55,7 @@ export class AppointmentApiService {
     payload: AppointmentCreateRequest,
   ): Observable<AppointmentPublic> {
     return this.http.post<AppointmentPublic>(
-      `${this.base}/appointments`,
+      `${this.apiBase.base}/appointments`,
       payload,
     );
   }
