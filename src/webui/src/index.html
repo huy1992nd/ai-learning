@@ -8,6 +8,40 @@
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
   </head>
   <body class="mat-typography">
+    <!-- Chạy trước Angular: URL BE (ngrok). Đổi khi tunnel đổi. -->
+    <script>
+      window.__MEDASSIST_API_BASE__ = 'https://pushup-wrench-ignore.ngrok-free.dev/api';
+      (function () {
+        var ngrokRoot = 'https://pushup-wrench-ignore.ngrok-free.dev';
+        function toNgrok(url) {
+          if (typeof url !== 'string') return url;
+          try {
+            var u = new URL(url, location.origin);
+            if (u.pathname.indexOf('/api') === 0) {
+              return ngrokRoot + u.pathname + u.search;
+            }
+          } catch (e) {}
+          return url;
+        }
+        var origFetch = window.fetch;
+        window.fetch = function (input, init) {
+          if (typeof input === 'string') {
+            input = toNgrok(input);
+          } else if (input && typeof input === 'object' && 'url' in input) {
+            var next = toNgrok(input.url);
+            if (next !== input.url) {
+              input = new Request(next, input);
+            }
+          }
+          return origFetch.call(this, input, init);
+        };
+        var xhrOpen = XMLHttpRequest.prototype.open;
+        XMLHttpRequest.prototype.open = function (method, url) {
+          arguments[1] = toNgrok(url);
+          return xhrOpen.apply(this, arguments);
+        };
+      })();
+    </script>
     <app-root></app-root>
   </body>
 </html>
