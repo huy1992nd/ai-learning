@@ -62,7 +62,16 @@ Production gọi **thẳng ngrok** trong [`environment.prod.ts`](./src/environme
 
 `CORS_ORIGINS=http://localhost:4200,https://ai-learning-web-git-main-huy1992nds-projects.vercel.app`
 
-Tunnel ngrok phải **đang chạy**; URL đổi thì sửa `environment.ts`, `environment.prod.ts` và redeploy FE.
+Tunnel ngrok phải **đang chạy**; URL đổi thì sửa `environment.ts` hoặc biến Vercel **`API_BASE_URL`** rồi redeploy FE.
+
+### Deploy vẫn gọi `…vercel.app/api/…` (502 DNS_HOSTNAME_EMPTY)
+
+1. Trên Vercel → **Deployments** → bản mới nhất → **Source**: repo phải là **`huy1992nd/ai-learning`**, commit **≥** có `write-env-prod.mjs`, **Root Directory** = `src/webui`.
+2. Nếu project nối repo khác (`ai-learning-vercel-demo`, …) → đổi Git repo hoặc push code `ai-learning` sang repo đó.
+3. **Settings → Environment Variables** (Production): `API_BASE_URL` = `https://pushup-wrench-ignore.ngrok-free.dev/api`
+4. Redeploy bật **Clear build cache**.
+5. Trình duyệt: hard refresh (Ctrl+Shift+R). Network tab login phải là host **`ngrok-free.dev`**, không còn `vercel.app/api`.
+6. **Settings → Redirects/Rewrites** (dashboard): xóa rule `/api` → backend trống (gây 502).
 
 ### 3. Kiểm tra
 
