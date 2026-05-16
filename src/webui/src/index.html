@@ -33,12 +33,30 @@
               input = new Request(next, input);
             }
           }
+          var url = typeof input === 'string' ? input : input && input.url;
+          if (url && url.indexOf('ngrok-free.dev') !== -1) {
+            init = init ? Object.assign({}, init) : {};
+            var h = new Headers(init.headers || {});
+            h.set('ngrok-skip-browser-warning', 'true');
+            init.headers = h;
+          }
           return origFetch.call(this, input, init);
         };
         var xhrOpen = XMLHttpRequest.prototype.open;
+        var xhrSend = XMLHttpRequest.prototype.send;
         XMLHttpRequest.prototype.open = function (method, url) {
           arguments[1] = toNgrok(url);
+          this.__ngrokApi =
+            typeof arguments[1] === 'string' && arguments[1].indexOf('ngrok-free.dev') !== -1;
           return xhrOpen.apply(this, arguments);
+        };
+        XMLHttpRequest.prototype.send = function (body) {
+          if (this.__ngrokApi) {
+            try {
+              this.setRequestHeader('ngrok-skip-browser-warning', 'true');
+            } catch (e) {}
+          }
+          return xhrSend.apply(this, arguments);
         };
       })();
     </script>
