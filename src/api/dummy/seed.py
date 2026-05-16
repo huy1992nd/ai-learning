@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import os
 import shutil
 import sqlite3
 import sys
@@ -15,14 +16,44 @@ except ImportError:
     sys.exit(1)
 
 DUMMY_DIR = Path(__file__).resolve().parent
-DB_PATH = DUMMY_DIR / "medassist.db"
+_API_ROOT = DUMMY_DIR.parent
 SCHEMA_PATH = DUMMY_DIR / "schema.sql"
-# Embedding cache dir: dummy/chroma_store
-CHROMA_DIR = DUMMY_DIR / "chroma_store"
 
 
-def _connect() -> sqlite3.Connection:
-    conn = sqlite3.connect(DB_PATH)
+def _resolve_path(raw: str, *, default: Path) -> Path:
+    raw = raw.strip()
+    if not raw:
+        return default
+    p = Path(raw)
+    return p.resolve() if p.is_absolute() else (_API_ROOT / p).resolve()
+
+
+def get_db_path() -> Path:
+    """SQLite path: same resolution as the running app (`.env` / Settings), with env/CLI fallback."""
+    try:
+        from app.db.connection import resolve_sqlite_path
+
+        return resolve_sqlite_path()
+    except Exception:
+        return _resolve_path(os.environ.get("SQLITE_DATABASE_PATH", ""), default=DUMMY_DIR / "medassist.db")
+
+
+def get_chroma_dir() -> Path:
+    """Chroma persist dir aligned with `get_settings().chroma_persist_dir` when the app package is importable."""
+    try:
+        from app.core.config import get_settings
+
+        raw = get_settings().chroma_persist_dir.strip()
+        if not raw:
+            return (DUMMY_DIR / "chroma_store").resolve()
+        p = Path(raw)
+        return p.resolve() if p.is_absolute() else (_API_ROOT / p).resolve()
+    except Exception:
+        return _resolve_path(os.environ.get("CHROMA_PERSIST_DIR", ""), default=DUMMY_DIR / "chroma_store")
+
+
+def _connect(db_path: Path) -> sqlite3.Connection:
+    conn = sqlite3.connect(db_path)
     conn.execute("PRAGMA foreign_keys = ON")
     conn.execute("PRAGMA journal_mode = WAL")
     return conn
@@ -301,28 +332,50 @@ def _seed(conn: sqlite3.Connection) -> None:
     conn.commit()
 
 
+def seed_if_missing() -> None:
+    """Create and seed SQLite when the file is absent (e.g. first cold start on Vercel `/tmp`)."""
+    db_path = get_db_path()
+    if db_path.exists():
+        return
+    if not SCHEMA_PATH.is_file():
+        print(f"Schema file not found: {SCHEMA_PATH}", file=sys.stderr)
+        return
+    db_path.parent.mkdir(parents=True, exist_ok=True)
+    conn = _connect(db_path)
+    try:
+        _apply_schema(conn)
+        _seed(conn)
+    finally:
+        conn.close()
+    print(f"[seed_if_missing] Database created: {db_path}")
+
+
 def main() -> None:
     if not SCHEMA_PATH.is_file():
         print(f"Schema file not found: {SCHEMA_PATH}", file=sys.stderr)
         sys.exit(1)
 
-    if DB_PATH.exists():
-        DB_PATH.unlink()
+    db_path = get_db_path()
+    chroma_dir = get_chroma_dir()
+
+    if db_path.exists():
+        db_path.unlink()
     chroma_wiped = False
-    if CHROMA_DIR.exists():
-        shutil.rmtree(CHROMA_DIR, ignore_errors=True)
+    if chroma_dir.exists():
+        shutil.rmtree(chroma_dir, ignore_errors=True)
         chroma_wiped = True
 
-    conn = _connect()
+    db_path.parent.mkdir(parents=True, exist_ok=True)
+    conn = _connect(db_path)
     try:
         _apply_schema(conn)
         _seed(conn)
     finally:
         conn.close()
 
-    print(f"Database created: {DB_PATH}")
+    print(f"Database created: {db_path}")
     if chroma_wiped:
-        print(f"Chroma store wiped: {CHROMA_DIR}")
+        print(f"Chroma store wiped: {chroma_dir}")
     print("Demo admin account: admin@medassist.local / Demo@123")
     print("Demo doctor account: doctor@medassist.local / Demo@123 (doctor_id=1, James Miller)")
 

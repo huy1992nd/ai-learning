@@ -117,6 +117,8 @@ class Settings(BaseSettings):
         alias="CORS_ORIGINS",
     )
     sqlite_database_path: str = Field(default="dummy/medassist.db", alias="SQLITE_DATABASE_PATH")
+    #: Absolute or path relative to `src/api`. Empty → `dummy/kb_uploads` (writable dirs for serverless: e.g. `/tmp/kb_uploads`).
+    kb_upload_dir: str = Field(default="", alias="KB_UPLOAD_DIR")
     frontend_base_url: str = Field(default="http://localhost:4200", alias="FRONTEND_BASE_URL")
     teams_webhook_url: str = Field(default="", alias="TEAMS_WEBHOOK_URL")
     jwt_secret: str = Field(default="change-me-in-production-use-long-random-secret", alias="JWT_SECRET")
@@ -171,6 +173,7 @@ class Settings(BaseSettings):
         "openai_embedding_endpoint",
         "openai_embedding_api_key",
         "chroma_persist_dir",
+        "kb_upload_dir",
         "hf_speech_model_id",
         "hf_speech_model_local_dir",
         "hf_token",

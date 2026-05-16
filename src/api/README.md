@@ -65,6 +65,28 @@ The `--reload-include ".env"` line makes the dev server restart when you change
 
 The API is then available at `http://localhost:8000`.
 
+## Deploy lên Vercel
+
+Repo này dùng **FastAPI + PyTorch/Transformers + Chroma + SQLite**. Vercel chạy backend dưới dạng **một Python Function** (xem [`pyproject.toml`](./pyproject.toml) mục `[tool.vercel]`). Lưu ý:
+
+- **Kích thước & cold start:** `torch` + `transformers` gần giới hạn bundle Python trên Vercel; lần khởi động có thể rất chậm. Nếu build/deploy lỗi vì dung lượng, nên dùng **Docker** (file [`Dockerfile`](./Dockerfile)) trên Fly.io, Railway hoặc Google Cloud Run.
+- **Filesystem:** trên serverless chỉ nên ghi **`/tmp`**. Đặt biến môi trường (trong Vercel → Settings → Environment Variables) ví dụ:
+  - `SQLITE_DATABASE_PATH=/tmp/medassist.db`
+  - `CHROMA_PERSIST_DIR=/tmp/chroma_store`
+  - `KB_UPLOAD_DIR=/tmp/kb_uploads`
+- **Seed:** lần đầu file SQLite chưa có, app gọi `seed_if_missing()` trong lifespan để tạo DB demo (cùng logic schema/seed như `python dummy/seed.py`).
+- **STT local HF:** trên Vercel không thực tế (tải mô hình lớn). Đặt `PREFER_HF_LOCAL_STT=0` và cấu hình `OPENAI_STT_DEPLOYMENT` (Whisper) nếu cần STT.
+- **SSE / thời gian chạy:** luồng chat dài có thể chạm giới hạn thời gian function; trên plan Pro có thể tăng `maxDuration` trong dashboard nếu cần.
+
+**Các bước**
+
+1. Cài [Vercel CLI](https://vercel.com/docs/cli) (`npm i -g vercel`) hoặc import repo trên [vercel.com](https://vercel.com).
+2. Trong project Vercel, đặt **Root Directory** = `src/api` (monorepo).
+3. Thêm secrets OpenAI/Azure (và các biến như trên). `JWT_SECRET` phải đổi khỏi giá trị demo.
+4. Deploy: từ máy, `cd src/api && vercel` (hoặc push lên nhánh đã kết nối Git).
+
+Sau deploy, kiểm tra `GET /api/health` và `GET /api/db/ping` trên URL Vercel.
+
 ## Endpoints
 | Method | Path                         | Description                                     |
 |--------|------------------------------|-------------------------------------------------|

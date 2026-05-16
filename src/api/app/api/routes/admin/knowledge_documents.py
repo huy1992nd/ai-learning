@@ -46,7 +46,14 @@ def _api_root() -> Path:
 
 
 def _upload_dir() -> Path:
-    d = _api_root() / "dummy" / "kb_uploads"
+    from app.core.config import get_settings
+
+    raw = (get_settings().kb_upload_dir or "").strip()
+    if raw:
+        p = Path(raw)
+        d = p.resolve() if p.is_absolute() else (_api_root() / p).resolve()
+    else:
+        d = _api_root() / "dummy" / "kb_uploads"
     d.mkdir(parents=True, exist_ok=True)
     return d
 
@@ -57,7 +64,11 @@ def _safe_filename(name: str) -> str:
 
 
 def _rel_upload(path: Path) -> str:
-    return str(path.relative_to(_api_root()))
+    root = _api_root()
+    try:
+        return str(path.resolve().relative_to(root))
+    except ValueError:
+        return str(path.resolve())
 
 
 def _admin_email(payload: dict) -> str | None:

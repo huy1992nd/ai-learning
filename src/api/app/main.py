@@ -38,6 +38,9 @@ logging.basicConfig(
 @asynccontextmanager
 async def _lifespan(_app: FastAPI):
     """Ensure SRS v3 KB tables exist on existing SQLite files (CREATE IF NOT EXISTS)."""
+    from dummy.seed import seed_if_missing
+
+    await asyncio.to_thread(seed_if_missing)
     Base.metadata.create_all(
         bind=engine,
         tables=[
