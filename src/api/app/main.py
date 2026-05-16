@@ -112,12 +112,15 @@ def create_app() -> FastAPI:
         lifespan=_lifespan,
     )
 
+    _cors_regex = (settings.cors_origin_regex or "").strip() or None
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origin_list,
+        allow_origin_regex=_cors_regex,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
+        expose_headers=["*"],
     )
 
     @app.get("/api/health", tags=["meta"])

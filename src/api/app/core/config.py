@@ -116,6 +116,11 @@ class Settings(BaseSettings):
         default="http://localhost:4200,http://127.0.0.1:4200",
         alias="CORS_ORIGINS",
     )
+  # Cho phép mọi preview/production *.vercel.app (tránh thiếu origin khi URL đổi)
+    cors_origin_regex: str = Field(
+        default=r"https://.*\.vercel\.app",
+        alias="CORS_ORIGIN_REGEX",
+    )
     sqlite_database_path: str = Field(default="dummy/medassist.db", alias="SQLITE_DATABASE_PATH")
     #: Absolute or path relative to `src/api`. Empty → `dummy/kb_uploads` (writable dirs for serverless: e.g. `/tmp/kb_uploads`).
     kb_upload_dir: str = Field(default="", alias="KB_UPLOAD_DIR")
@@ -173,6 +178,7 @@ class Settings(BaseSettings):
         "openai_embedding_endpoint",
         "openai_embedding_api_key",
         "chroma_persist_dir",
+        "cors_origin_regex",
         "kb_upload_dir",
         "hf_speech_model_id",
         "hf_speech_model_local_dir",
