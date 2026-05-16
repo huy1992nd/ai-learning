@@ -1,5 +1,5 @@
-/** Dev: call API directly so SSE streams are not buffered by `ng serve` proxy. */
+/** Dev: BE qua ngrok (SSE trực tiếp, không qua proxy `ng serve`). Đổi URL khi tunnel đổi. */
 export const environment = {
   production: false,
-  apiBaseUrl: 'http://localhost:8000/api',
+  apiBaseUrl: 'https://pushup-wrench-ignore.ngrok-free.dev/api',
 };

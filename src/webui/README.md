@@ -19,9 +19,9 @@ npm install
 npm start
 ```
 
-The dev server runs on `http://localhost:4200`. Chat requests use
-`http://localhost:8000/api` directly (`environment.ts`) so **SSE streams are not
-buffered** by the dev proxy — tokens appear one-by-one in the UI. The backend
+The dev server runs on `http://localhost:4200`. Chat requests use the URL in
+[`environment.ts`](./src/environments/environment.ts) (`apiBaseUrl`, mặc định tunnel **ngrok** tới BE) so **SSE streams are not
+buffered** by the dev proxy — tokens appear one-by-one in the UI. Đổi `apiBaseUrl` về `http://localhost:8000/api` nếu chạy BE local không tunnel. The backend
 must allow CORS from `http://localhost:4200` (already configured in `src/api`).
 `proxy.conf.json` is still available if you switch `apiBaseUrl` back to a
 relative `/api`.
@@ -58,7 +58,7 @@ Angular build ra static files; Vercel phát từ thư mục output.
 
 Production đang dùng `apiBaseUrl: '/api'` trong [`environment.prod.ts`](./src/environments/environment.prod.ts).
 
-**Cách A — proxy qua Vercel (giữ `/api` trên cùng domain FE):** sửa [`vercel.json`](./vercel.json), thay `https://YOUR-BACKEND-HOST.example.com` bằng URL thật của BE (ví dụ `https://xxx.vercel.app`, **không** có `/` thừa cuối host). BE phải bật **CORS** cho origin FE (ví dụ `https://your-app.vercel.app`).
+**Cách A — proxy qua Vercel (giữ `/api` trên cùng domain FE):** [`vercel.json`](./vercel.json) rewrite `/api` → BE (hiện trỏ tunnel ngrok; đổi khi URL tunnel đổi). BE phải bật **CORS** cho origin FE (ví dụ `https://your-app.vercel.app`).
 
 **Cách B — gọi thẳng URL BE:** đổi `apiBaseUrl` trong `environment.prod.ts` thành `https://<be-host>/api`, commit rồi build; BE vẫn phải CORS cho origin FE.
 
