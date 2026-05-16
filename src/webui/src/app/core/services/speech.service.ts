@@ -1,6 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Subject } from 'rxjs';
 
+import { withNgrokHeaders } from '../api-http-headers';
 import { environment } from '../../../environments/environment';
 import { I18nService } from '../i18n/i18n.service';
 
@@ -124,6 +125,7 @@ export class SpeechService {
     try {
       const res = await fetch(`${environment.apiBaseUrl}/audio/speech-to-text`, {
         method: 'POST',
+        headers: withNgrokHeaders(),
         body: formData,
       });
 
@@ -185,7 +187,7 @@ export class SpeechService {
     try {
       const res = await fetch(`${environment.apiBaseUrl}/audio/text-to-speech`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: withNgrokHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify({
           text,
           voice: 'alloy',

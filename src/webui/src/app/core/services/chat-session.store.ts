@@ -1,6 +1,7 @@
 import { Injectable, computed, inject, signal, ApplicationRef } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { withNgrokHeaders } from '../api-http-headers';
 import { environment } from '../../../environments/environment';
 import { ChatMessage, ConversationStage, DetectedLanguage, MessageCard, Severity } from '../../features/chat/models/message.model';
 import { SessionService } from './session.service';
@@ -79,10 +80,10 @@ export class ChatSessionStore {
     try {
       const response = await fetch(`${environment.apiBaseUrl}${streamPath}`, {
         method: 'POST',
-        headers: {
+        headers: withNgrokHeaders({
           'Content-Type': 'application/json',
           Accept: 'text/event-stream',
-        },
+        }),
         body: JSON.stringify({
           session_id: this.sessionId(),
           message: trimmed,

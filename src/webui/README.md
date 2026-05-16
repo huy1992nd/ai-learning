@@ -56,11 +56,13 @@ Angular build ra static files; Vercel phát từ thư mục output.
 
 ### 2. Nối API backend
 
-Production đang dùng `apiBaseUrl: '/api'` trong [`environment.prod.ts`](./src/environments/environment.prod.ts).
+Production gọi **thẳng ngrok** trong [`environment.prod.ts`](./src/environments/environment.prod.ts) (`apiBaseUrl: https://…ngrok-free.dev/api`). Trên Network tab bạn sẽ thấy request tới host ngrok, không còn `…vercel.app/api/…` (tránh lỗi Vercel **502 / DNS_HOSTNAME_EMPTY** khi rewrite proxy).
 
-**Cách A — proxy qua Vercel (giữ `/api` trên cùng domain FE):** [`vercel.json`](./vercel.json) rewrite `/api` → BE (hiện trỏ tunnel ngrok; đổi khi URL tunnel đổi). BE phải bật **CORS** cho origin FE (ví dụ `https://your-app.vercel.app`).
+**Bắt buộc trên BE** (`src/api/.env`): `CORS_ORIGINS` phải có URL FE Vercel, ví dụ:
 
-**Cách B — gọi thẳng URL BE:** đổi `apiBaseUrl` trong `environment.prod.ts` thành `https://<be-host>/api`, commit rồi build; BE vẫn phải CORS cho origin FE.
+`CORS_ORIGINS=http://localhost:4200,https://ai-learning-web-git-main-huy1992nds-projects.vercel.app`
+
+Tunnel ngrok phải **đang chạy**; URL đổi thì sửa `environment.ts`, `environment.prod.ts` và redeploy FE.
 
 ### 3. Kiểm tra
 

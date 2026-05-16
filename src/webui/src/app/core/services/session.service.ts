@@ -1,5 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 
+import { withNgrokHeaders } from '../api-http-headers';
 import { environment } from '../../../environments/environment';
 
 const STORAGE_KEY = 'chat_session_id';
@@ -26,6 +27,7 @@ export class SessionService {
     try {
       await fetch(`${environment.apiBaseUrl}/sessions/${current}`, {
         method: 'DELETE',
+        headers: withNgrokHeaders(),
       });
     } catch {
       // Best-effort: even if the server call fails, still rotate locally.

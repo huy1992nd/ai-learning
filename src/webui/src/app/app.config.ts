@@ -6,6 +6,7 @@ import { provideTranslateLoader, provideTranslateService } from '@ngx-translate/
 
 import { routes } from './app.routes';
 import { adminAuthInterceptor } from './core/interceptors/admin-auth.interceptor';
+import { ngrokInterceptor } from './core/interceptors/ngrok.interceptor';
 import { AppTranslateHttpLoader } from './core/i18n/translate-http.loader';
 import { DEFAULT_LOCALE } from './core/i18n/translations';
 
@@ -14,7 +15,7 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideAnimationsAsync(),
-    provideHttpClient(withInterceptors([adminAuthInterceptor])),
+    provideHttpClient(withInterceptors([ngrokInterceptor, adminAuthInterceptor])),
     provideTranslateService({
       loader: provideTranslateLoader(AppTranslateHttpLoader),
       fallbackLang: DEFAULT_LOCALE,
